@@ -18,7 +18,6 @@
         <h2>Tus datos y cita</h2>
         <p class="text-center">Colocar tus datos y fecha de tu cita</p>
 
-
         <form class= "formulario">
             <div class="campo">
                 <label for="nombre">Nombre</label>
@@ -36,6 +35,8 @@
                 <input
                     id="fecha"
                     type="date"
+                    min= "2026-09-04"
+                    min= "<?php echo date('Y-m-d', strtotime('+1 day')); ?>"
                 />      
             </div>
             
