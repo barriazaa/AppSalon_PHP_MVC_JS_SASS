@@ -26,6 +26,8 @@ function iniciarApp() {
     seleccionarFecha(); // Añade la fecha de la cita al objeto.
     seleccionarHora(); // Añade la hora de la cita al objeto.
 
+    mostrarResumen(); // Muestra el resumen de la cita
+
 }
 
 function mostrarSeccion() {
@@ -60,8 +62,8 @@ function tabs() {
             paso = parseInt(e.target.dataset.paso);
             
             mostrarSeccion();
-
             botonesPaginador();
+
         });
     })
 } 
@@ -76,6 +78,8 @@ function botonesPaginador() {
     } else if (paso === 3) {
         paginaAnterior.classList.remove('ocultar');
         paginaSiguiente.classList.add('ocultar');
+
+        mostrarResumen(); //Se ejecuta la funcion para mostrar el resumen de la cita 
     } else {
         paginaAnterior.classList.remove('ocultar');
         paginaSiguiente.classList.remove('ocultar');
@@ -177,7 +181,7 @@ function seleccionarFecha() {
 
         if ( [6,0].includes(dia) ) {
             e.target.value = '';
-            mostrarAlerta('Fines de semana no permitidos', 'error');
+            mostrarAlerta('Fines de semana no permitidos', 'error', '.formulario');
         }else {
             cita.fecha = e.target.value;
         }
@@ -193,18 +197,20 @@ function seleccionarHora() {
         const hora = horaCita.split(":")[0];
         if(hora < 9 || hora > 18) {
             e.target.value = '';
-            mostrarAlerta('Hora no válida', 'error');
+            mostrarAlerta('Hora no válida', 'error', '.formulario');
         }else {
             cita.hora = e.target.value;
         }
     })   
 }
 
-function mostrarAlerta(mensaje, tipo) {
+function mostrarAlerta(mensaje, tipo, elemento, desaparece = true) {
 
     //Previene que se genere mas de una alerta.
     const alertaPrevia = document.querySelector('.alerta');
-    if (alertaPrevia) return;
+    if (alertaPrevia) {
+        alertaPrevia.remove();
+    }
 
     //Scripting para crear la alerta
     const alerta = document.createElement('DIV');
@@ -212,12 +218,63 @@ function mostrarAlerta(mensaje, tipo) {
     alerta.classList.add('alerta');
     alerta.classList.add(tipo);
     
-    const formulario = document.querySelector('.formulario');
-    formulario.appendChild(alerta);
+    const referencia = document.querySelector(elemento);
+    referencia.appendChild(alerta);
+    
+    if (desaparece) {
+        //Eliminar la alerta.
+        setTimeout(() => {
+            alerta.remove();
+        }, 3000);
+    }
 
-    //Eliminar la alerta.
-    setTimeout(() => {
-        alerta.remove();
-    }, 3000);
 }
+
+function mostrarResumen() {
+    const resumen = document.querySelector('.contenido-resumen');
+
+    //Limpiar el contenido de resumen
+    while(resumen.firstChild) {
+        resumen.removeChild(resumen.firstChild);
+    }
+
+    if(Object.values(cita).includes('') || cita.servicios.length === 0) {
+        mostrarAlerta('Faltan datos de servicios, fecha u hora', 'error', '.contenido-resumen', false);
+        
+        return;
+    }
+    //Formatear el div de resumen
+    const { nombre, fecha, hora, servicios } = cita;
+
+    const nombreCliente = document.createElement('P');
+    nombreCliente.innerHTML = `<span>Nombre:</span> ${nombre}`;
+
+    const fechaCliente = document.createElement('P');
+    fechaCliente.innerHTML = `<span>Fecha:</span> ${fecha}`;
+
+    const horaCliente = document.createElement('P');
+    horaCliente.innerHTML = `<span>Hora:</span> ${hora}`;
+
+    servicios.forEach (servicio => {
+        const { id, nombre, precio } = servicio;
+        const contenedorServicio = document.createElement('DIV');
+        contenedorServicio.classList.add('contenedor-servicio');
+
+        const textoServicio = document.createElement('P');
+        textoServicio.textContent = nombre;
+
+        const precioServicio = document.createElement('P');
+        precioServicio.innerHTML = `<span>Precio:</span> Q${precio}`;
+        
+        contenedorServicio.appendChild(textoServicio);
+        contenedorServicio.appendChild(precioServicio);
+
+        resumen.appendChild(contenedorServicio);
+    })
+
+    resumen.appendChild(nombreCliente);
+    resumen.appendChild(fechaCliente);
+    resumen.appendChild(horaCliente);
+
+}    
 
