@@ -121,7 +121,7 @@ async function consultarAPI() {
 function mostrarServicios(servicios) { 
     servicios.forEach( servicio => {
         const { id, nombre, precio } = servicio;
-        console.log(id);
+        //console.log(id);
 
         const nombreServicio = document.createElement('P');
         nombreServicio.classList.add('nombre-servicio');
@@ -246,15 +246,12 @@ function mostrarResumen() {
     //Formatear el div de resumen
     const { nombre, fecha, hora, servicios } = cita;
 
-    const nombreCliente = document.createElement('P');
-    nombreCliente.innerHTML = `<span>Nombre:</span> ${nombre}`;
+    //Heading para servicios en resumen
+    const headingServicios = document.createElement ('H3');
+    headingServicios.textContent = 'Resumen de servicios';
+    resumen.appendChild(headingServicios);
 
-    const fechaCliente = document.createElement('P');
-    fechaCliente.innerHTML = `<span>Fecha:</span> ${fecha}`;
-
-    const horaCliente = document.createElement('P');
-    horaCliente.innerHTML = `<span>Hora:</span> ${hora}`;
-
+    //Iterando y mostrando los servicios
     servicios.forEach (servicio => {
         const { id, nombre, precio } = servicio;
         const contenedorServicio = document.createElement('DIV');
@@ -270,11 +267,59 @@ function mostrarResumen() {
         contenedorServicio.appendChild(precioServicio);
 
         resumen.appendChild(contenedorServicio);
-    })
+    });
+
+    //Heading para cita en resumen
+    const headingCita = document.createElement ('H3');
+    headingCita.textContent = 'Resumen de cita';
+    resumen.appendChild(headingCita);
+
+    const nombreCliente = document.createElement('P');
+    nombreCliente.innerHTML = `<span>Nombre:</span> ${nombre}`;
+
+    //Formatear la fecha en español
+
+    const [year, mes, dia] = fecha.split('-');
+
+    const fechaUTC = new Date(Date.UTC(year, mes - 1, dia));
+
+    const opciones = { weekday: 'long', year: 'numeric', month:'long', day: 'numeric', timeZone: 'UTC' }
+    const fechaFormateada = fechaUTC.toLocaleDateString('es-MX', opciones);
+    console.log(fechaFormateada);
+
+    const fechaCliente = document.createElement('P');
+    fechaCliente.innerHTML = `<span>Fecha:</span> ${fechaFormateada}`;
+
+    const horaCliente = document.createElement('P');
+    horaCliente.innerHTML = `<span>Hora:</span> ${hora}`;
+
+    //Boton para crear una cita
+    const botonReservar = document.createElement('BUTTON');
+    botonReservar.classList.add('boton');
+    botonReservar.textContent = 'Reservar Cita';
+    botonReservar.onclick = reservarCita;
 
     resumen.appendChild(nombreCliente);
     resumen.appendChild(fechaCliente);
     resumen.appendChild(horaCliente);
 
+    resumen.appendChild(botonReservar);
 }    
+
+async function reservarCita () {
+    
+    const datos = new FormData(); 
+    datos.append('nombre', 'Bryan')
+
+    //Peticion hacia la api
+    const url = 'http://localhost:3000/api/citas'
+
+    const respuesta = await fetch (url, {
+        method: 'POST',
+        body: datos
+    });
+
+    const resultado = await respuesta.json();
+    console.log (resultado);
+}
 
