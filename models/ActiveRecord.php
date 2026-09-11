@@ -148,8 +148,8 @@ class ActiveRecord {
         // Resultado de la consulta
         $resultado = self::$db->query($query);
         return [
-           'resultado' =>  $resultado,
-           'id' => self::$db->insert_id
+        'resultado' =>  $resultado,
+        'id' => self::$db->insert_id
         ];
     }
 
