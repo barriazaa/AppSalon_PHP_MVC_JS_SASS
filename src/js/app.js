@@ -95,15 +95,17 @@ function paginaAnterior() {
         paso--;
 
         botonesPaginador();
+        mostrarSeccion();
     })
 }
 function paginaSiguiente() {
     const paginaSiguiente = document.querySelector('#siguiente');
     paginaSiguiente.addEventListener('click', function() {
-        if(paso >= pasoInicioal) return;
+        if(paso >= pasoFinal) return;
         paso++ ;
 
         botonesPaginador();
+        mostrarSeccion();
     })
 }
 

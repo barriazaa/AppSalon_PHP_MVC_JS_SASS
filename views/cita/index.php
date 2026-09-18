@@ -1,6 +1,12 @@
 <h1 class="nombre-pagina">Crear Nueva Cita</h1>
 <p class="descripcion-pagina text-center">Elige tus servicios y coloca tus datos</p>
 
+<div class="barra">
+    <p>Hola: <?php echo $nombre ?? ''; ?></p>
+
+    <a class="boton" href="/logout">Cerrar Sesion</a>
+</div>
+
 <div id="app">
     <nav class="tabs">
         <button class="actual" type="button" data-paso="1">Servicios</button>
@@ -25,7 +31,7 @@
                     id="nombre"
                     type="text"
                     placeholder="Tu nombre"
-                    value="<?php echo $nombre; ?>"
+                    value="<?php echo $nombre ?? ''; ?>"
                     disabled
                 />      
             </div> 
@@ -48,7 +54,7 @@
                 />      
             </div>
 
-            <input type="hidden" id="id" value="<?php echo $id; ?>" >
+            <input type="hidden" id="id" value="<?php echo $id ?? ''; ?>" >
 
         </form>
     </div>
